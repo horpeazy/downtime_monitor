@@ -13,4 +13,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('websites/<int:pk>', views.WebsiteDetailView.as_view()),
     path('downtime-logs/<int:pk>', views.DowntimeLogDetailView.as_view()),
+    path('generate/', views.generate_apikey, name='generate_apikey'),
 ]

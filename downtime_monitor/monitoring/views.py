@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Website, DowntimeLog, Monitor
+from notifications.models import NotificationGroup
 import datetime
 import json
 
@@ -61,4 +62,3 @@ def create_monitor(request):
         'created': True
     }
     return JsonResponse(response, status=201)
-

@@ -1,9 +1,13 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from monitoring.models import DowntimeLog, Website
+from .models import APIKey
 from .serializers import DowntimeLogSerializer, WebsiteSerializer, WebsiteDetailSerializer
+import uuid
 
 
 # Create your views here.
@@ -28,3 +32,9 @@ class DowntimeLogDetailView(APIView):
         log = get_object_or_404(Website, pk=pk)
         serializer = DowntimeLogSerializer(log)
         return Response(serializer.data)
+
+@csrf_exempt
+def generate_apikey(request):
+    key = uuid.uuid4()
+    api_key = APIKey.objects.create(user=request.user, key=key)
+    return JsonResponse({'apikey': key}, status=201)

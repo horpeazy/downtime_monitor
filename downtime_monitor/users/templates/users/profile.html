@@ -1,0 +1,122 @@
+{% extends 'monitoring/main.html' %}
+{% block content %}
+    <div class="api-key">
+        {% if api_key %}
+            <span class="key">Your API KEY is: {{ api_key }} </span>
+        {% else %}
+            <button class="api-btn">Generate API KEY</button>
+        {% endif %}
+    </div>
+    
+    <div>
+        <button class="email-btn">Add Email</button>
+        <div class="notification-group">
+            {% if emails %}
+                {% for email in emails %}
+                    <div class="email">
+                        {{ email }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <span class="no-email">Your emails will appear here</span>
+            {% endif %}
+        </div>
+    </div>
+    <a href="/accounts/logout"><button class="logout-btn">Logout</button></a>
+    <div class="add-monitor">
+        <div class="monitor-form-wrapper">
+            <div class="add-monitor-header">
+                <h2>Add Monitor</h2>
+                <span >
+                    <svg class="close" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </span>
+            </div>
+            <form action="" method="post" class="monitor-form">
+                <div class="form-group">
+                    <label for="">Enter Emails(comma seperated)</label>
+                    <!-- <input type="textarea"  name='name' class="form-control" id="emails" placeholder="a@example.com,b@example.com"> -->
+                    <textarea class="form-control" name="emails" id="emails" cols="30" rows="50"></textarea>
+                </div>
+                <div class="monitor-btn-wrapper">
+                    <button type="submit" class="create-btn">Add Emails</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const emailBtn = document.querySelector('.email-btn');
+        const monitorBtn = document.querySelector('.add-monitor');
+        const createBtn = document.querySelector('.create-btn');
+        const emailsEl = document.querySelector('#emails');
+        const apiBtn = document.querySelector('.api-btn');
+
+        emailBtn.addEventListener('click', ()=> {
+            monitorBtn.style.display = 'flex';
+        })
+
+        apiBtn.addEventListener('click', (e)=> {
+            e.preventDefault();
+            fetch('/api/generate/', {
+                method: 'GET'
+            })
+            .then((res) => {
+                if (res.status == "201") {
+                    return res.json()
+                } else {
+                    alert("API Key could not be generated")
+                }
+            })
+            .then((res) => {
+                apiBtn.style.display = 'none';
+                const newEl = document.createElement('span');
+                newEl.classList.add('key');
+                newEl.innerHTML = `Your API key is ${res.apikey}`
+                document.querySelector('.api-key').appendChild(newEl);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        })
+
+        createBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            monitorBtn.style.display = 'none';
+            data = {
+                emails: emailsEl.value,
+            }
+            fetch('/notifications/create/', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then((res) => {
+                if (res.status == "201") {
+                    return res.json()
+                } else {
+                    alert("Email could not be added")
+                }    
+            })
+            .then((res) => {
+                const noEmail = document.querySelector('.no-email')
+                if (noEmail) {
+                    noEmail.style.display = 'none';
+                }
+                res.emails.forEach(element => {
+                    const newEl = document.createElement('div');
+                    newEl.classList.add('email');
+                    newEl.innerHTML = `
+                            <div>
+                                ${element}
+                            </div>`
+                    document.querySelector('.notification-group').appendChild(newEl);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        })
+        
+    </script>
+{% endblock %}

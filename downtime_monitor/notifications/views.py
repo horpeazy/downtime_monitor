@@ -1,8 +1,9 @@
 import sys
 from .models import NotificationGroup, Notification
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 @csrf_exempt
@@ -26,3 +27,28 @@ def send_notification(request):
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=405)
+
+@csrf_exempt
+def create_notification(request):
+    # retrive the data
+    data = json.loads(request.body)
+    # clean input
+    emails = data["emails"]
+    emails = emails.split(',')
+    cleaned_emails = []
+    for email in emails:
+        cleaned_emails.append(email.strip())
+    cleaned_emails = ','.join(cleaned_emails)
+    notification_group = NotificationGroup.objects.filter(user=request.user).first()
+    if notification_group:
+        emails = notification_group.emails
+        emails = emails + ',' + cleaned_emails
+        notification_group.emails = emails
+        notification_group.save()
+    else:
+        notification_group = NotificationGroup.objects.create(user=request.user, emails=cleaned_emails)
+    response = {
+        'emails': cleaned_emails.split(','),
+        'created': True
+    }
+    return JsonResponse(response, status=201)

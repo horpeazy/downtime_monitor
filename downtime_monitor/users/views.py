@@ -19,10 +19,15 @@ def home_view(request):
 
 def profile_view(request):
     notification_group = NotificationGroup.objects.filter(user=request.user)\
-        .all()
-    emails = notification_group.emails
-    emails = emails.split(',')
-    api_key = request.user.key
+        .first()
+    emails = None
+    if notification_group:
+        emails = notification_group.emails
+        emails = emails.split(',')
+    try:
+        api_key = request.user.apikey.key
+    except Exception:
+        api_key = None
     context = {
         'emails': emails,
         'api_key': api_key
