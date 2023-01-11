@@ -1,0 +1,11 @@
+{% extends 'monitoring/main.html' %}
+{% block content %}
+    <div>{{ website.name }} {{ website.url }}</div>
+    {% for log in downtime_logs %}
+        {{ log.down_time }}
+        {{ log.up_time }}
+        {{ log.error }}
+        {{ log.downtime_duration }}
+    {% endfor %}
+</body>
+{% endblock %}

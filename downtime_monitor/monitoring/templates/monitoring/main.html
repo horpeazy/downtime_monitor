@@ -1,0 +1,68 @@
+{% load static %}
+
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>{% block title %}{% endblock %}</title>
+
+<!-- meta -->
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- /meta -->
+
+<!-- styles -->
+<link rel="stylesheet" href="{% static 'plugins/font-awesome-4.6.1/css/font-awesome.css' %}" />
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}" />
+<!-- /styles -->
+
+<!-- favicons -->
+<link rel="shortcut icon" href="/static/ico/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
+<link rel="shortcut icon" href="/static/ico/favicon.png">
+<!-- /favicons -->
+
+<!--[if lt IE 9]><script src="/static/js/libs/respond-1.4.2.min.js"></script><![endif]-->
+<!-- /scripts -->
+</head>
+<body>
+
+  <!-- Wrap all page content here -->
+
+    <!-- Fixed navbar -->
+    <nav class="navbar">
+        <div>
+          <a href="/"><h1>Downtime Monitor</h1></a>
+        </div>
+        {% if request.user.is_authenticated %}
+        <div>
+          <a href="/profile">
+            <svg class="user" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"  fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+            </svg>
+          </a>
+        </div>
+        {% endif %}
+    </nav>
+
+
+    <!-- Begin page content -->
+    <main id="content" role="main" class="container">
+
+
+      {% block content %}{% endblock %}
+      
+    </main>
+
+    <footer id="footer">
+      <div class="container">
+        <p>Downtime Monitor &copy; All Rights Reserved.</p>
+      </div>
+    </footer>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</body>
+</html>
